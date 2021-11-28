@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Users</title>
+
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+        <strong><span id="emailPrincipal"> </span></strong> with roles:
+        <span id="rolePrincipal"> </span></a>
+    <a class="nav-link" href="/logout">Logout</a>
+</nav>
+
+
+<div class="container-fluid">
+
+    <div class="row vh-100">
+        <div class="col-lg-2 pl-0 pr-0 pt-3 bg-white">
+            <nav class="nav nav-pills flex-column">
+                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                    <li class="active">
+                        <a class="nav-link active" href="/admin">Admin</a>
+                    </li>
+                </div>
+                <li class="active">
+                    <a class="nav-link" href="/user">User</a>
+                </li>
+            </nav>
+        </div>
+
+        <div class="col-sm">
+            <h1 class="h3 p-2 font-bold">Admin Panel</h1>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                       aria-controls="home" aria-selected="true">User table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                       aria-controls="profile" aria-selected="false">New User</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="card">
+                        <div class="card-header"><strong>All users</strong></div>
+                        <div class="card-body">
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="adminTable">
+
+                                </tbody>
+                            </table>
+
+
+                            <!-- Edit Modal Begin -->
+                            <div class="modal fade" id="editModal" tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="editModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form id="editForm" name="editForm">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit
+                                                    user</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">x</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group text-center">
+                                                    <label for="idEdit" class="center-block">
+                                                        <span class="font-weight-bold">ID</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control collection-ville text-left"
+                                                           id="idEdit"
+                                                           name="id"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="firstNameEdit" class="center-block">
+                                                        <span class="font-weight-bold">First name</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control collection-ville text-left"
+                                                           id="firstNameEdit"
+                                                           name="firstName"
+                                                           required>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="lastNameEdit" class="center-block">
+                                                        <span class="font-weight-bold">Last name</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control collection-ville text-left"
+                                                           id="lastNameEdit"
+                                                           required>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="ageEdit" class="center-block">
+                                                        <span class="font-weight-bold">Age</span>
+                                                    </label>
+                                                    <input type="number" min="1"
+                                                           class="form-control collection-ville text-left"
+                                                           id="ageEdit"
+                                                           required>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="emailEdit" class="center-block">
+                                                        <span class="font-weight-bold">Email</span>
+                                                    </label>
+                                                    <input type="email"
+                                                           class="form-control collection-ville text-left"
+                                                           id="emailEdit"
+                                                           required>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="passwordEdit" class="center-block">
+                                                        <span class="font-weight-bold">Password</span>
+                                                    </label>
+                                                    <input type="password"
+                                                           class="form-control collection-ville text-left"
+                                                           id="passwordEdit"
+                                                           name="password">
+                                                    <input type="hidden"
+                                                           id="hiddenPasswordEdit"
+                                                           name="password">
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="roleEdit" class="center-block">
+                                                        <span class="font-weight-bold">Role</span>
+                                                    </label>
+                                                    <div id="roleEdit">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="1" id="roleEditAdmin">
+                                                            <label class="form-check-label" for="roleEditAdmin">
+                                                                ADMIN
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="2" id="roleEditUser">
+                                                            <label class="form-check-label" for="roleEditUser">
+                                                                USER
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <p id="failEdit" style="color:red"></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button class="btn btn-primary" type="button"
+                                                            name="edit" id="editButton"
+                                                            value="edit"
+                                                            onclick="editUser()">Edit
+                                                    </button>
+                                                    <button id="closeEditForm" class="btn"
+                                                            data-dismiss="modal" hidden>
+
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Modal End -->
+
+                            <!-- Delete Modal Begin -->
+
+                            <div class="modal fade" id="deleteModal" tabindex="-1"
+                                 role="dialog"
+                                 aria-labelledby="deleteModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form id="deleteForm" name="deleteForm">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Delete
+                                                    user</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">x</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group text-center">
+                                                    <label for="idDelete" class="center-block">
+                                                        <span class="font-weight-bold">ID</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control collection-ville text-left"
+                                                           id="idDelete"
+                                                           name="id"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="firstNameDelete" class="center-block">
+                                                        <span class="font-weight-bold">First name</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control text-left"
+                                                           id="firstNameDelete"
+                                                           name="firstName"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="lastNameDelete" class="center-block">
+                                                        <span class="font-weight-bold">Last name</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control text-left"
+                                                           id="lastNameDelete"
+                                                           name="lastName"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="ageDelete" class="center-block">
+                                                        <span class="font-weight-bold">Age</span>
+                                                    </label>
+                                                    <input type="number"
+                                                           class="form-control text-left"
+                                                           id="ageDelete"
+                                                           name="age"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="emailDelete" class="center-block">
+                                                        <span class="font-weight-bold">Email</span>
+                                                    </label>
+                                                    <input type="email"
+                                                           class="form-control text-left"
+                                                           id="emailDelete"
+                                                           name="email"
+                                                           disabled>
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="roleDelete" class="center-block">
+                                                        <span class="font-weight-bold">Role</span></label>
+                                                    <div id="roleDelete">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="1" id="roleDeleteAdmin" disabled>
+                                                            <label class="form-check-label" for="roleDeleteAdmin">
+                                                                ADMIN
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="2" id="roleDeleteUser" disabled>
+                                                            <label class="form-check-label" for="roleDeleteUser">
+                                                                USER
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button class="btn btn-danger" type="button"
+                                                            data-dismiss="modal"
+                                                            id="deleteButton"
+                                                            name="deleteButton"
+                                                            value="delete"
+                                                            onclick="deleteUser()">Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Modal End -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade " id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="card">
+                        <div class="card-header"><strong>Add new user</strong></div>
+                        <div class="card-body">
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-md-5 ">
+                                    <div class="container text-center">
+                                        <form id="addForm" align="center">
+                                            <div class="form-group">
+                                                <label for="firstNameAdd" class=" font-weight-bold">First name</label>
+                                                <input type="text" name="firstName" class="form-control" id="firstNameAdd"
+                                                       placeholder="Enter first name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="lastNameAdd" class=" font-weight-bold">Last name</label>
+                                                <input type="text" name="lastName" class="form-control" id="lastNameAdd"
+                                                       placeholder="Enter last name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ageAdd" class=" font-weight-bold">Age</label>
+                                                <input type="number" min="1" name="age" class="form-control" id="ageAdd"
+                                                       placeholder="Enter age" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="emailAdd" class=" font-weight-bold">Email</label>
+                                                <input type="text" name="email" class="form-control" id="emailAdd"
+                                                       placeholder="Enter email address" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="passwordAdd" class=" font-weight-bold">Password</label>
+                                                <input type="password" name="password" class="form-control" id="passwordAdd"
+                                                       placeholder="Enter password" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="roleAdd" class=" font-weight-bold">Role</label>
+                                                <div id="roleAdd">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="1" id="roleAddAdmin">
+                                                        <label class="form-check-label" for="roleAddAdmin">
+                                                            ADMIN
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="2" id="roleAddUser" checked>
+                                                        <label class="form-check-label" for="roleAddUser">
+                                                            USER
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <p id="failAdd" style="color:red"></p>
+                                            </div>
+                                            <br>
+                                            <div>
+                                                <button type="button"
+                                                        class="btn btn-success"
+                                                        onclick="addUser()">
+                                                    Add new user
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <br>
+                                        <p id="successAdd" style="color:green"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/scripts/admin.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
